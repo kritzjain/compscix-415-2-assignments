@@ -1,0 +1,67 @@
+---
+title: "COMPSCIX 415.2 Homework 1"
+author: "Kritika Jain"
+date: "2/1/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+My Github repository for my assignments can be found at this URL: https://github.com/kritzjain/compscix-415-2-assignments.git (https://github.com/kritzjain/compscix-415-2-assignments.git)
+
+```{r load_packages, warning=FALSE, message=FALSE}
+library(mdsr)
+library(tidyverse) 
+
+data("WorldCities")
+glimpse("WorldCities")
+```
+
+
+
+Question 1
+
+There are 23,018 Observations and 10 Variables. 
+Some of the Variables are Code, Name, Country, Population, Date.
+
+```{r}
+WorldCities <- head(WorldCities, 200) #200 rows
+```
+
+
+```{r}
+country_col <- WorldCities$country
+unique(country_col)
+```
+
+```{r}
+region_col<-WorldCities$region
+unique(region_col)
+```
+
+Finished Questions 1 and 2.
+
+
+Question 3
+
+```{r}
+WorldCities %>% select(country) %>% unique()
+```
+
+
+```{r}
+WorldCities %>% ggplot(aes(x=population)) + geom_histogram()
+```
+
+
+Question 4
+
+```{r}
+WorldCities %>% ggplot(aes(x=population)) + geom_histogram() + xlab("City Population") + ylab("Population Count") + ggtitle("Population Table") + theme_bw()
+```
+
+
+Finished Question 3 and 4.
+
+Finished Homework Assignment 1 
