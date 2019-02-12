@@ -1,0 +1,90 @@
+---
+title: "COMPSCIX 415.2 Homework 2"
+author: "Kritika Jain"
+date: "2/10/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load_packages, warning=FALSE, message=FALSE}
+library(mdsr)
+library(tidyverse) 
+```
+
+
+3.2.4 Questions 1-5:
+
+1. Running "ggplot(data=mpg)" returns a blank plot, without any x- or y- display names because we have not given the command line specific instructions on what to label them as.
+
+2. Running "mpg" in the command line will tell us that there are 234 Rows and 11 Columns.
+
+3. According to ?mpg, the "drv" variable describes what kind of driving potential the car has. f stands for front-wheel drive, r stands for rear wheel drive and 4 stands for 4 wheel drive.
+
+4. Scatterplot of hwy and cyl
+```{r}
+ggplot(data=mpg) + geom_point(mapping = aes(x=hwy, y=cyl))
+```
+
+5. This is not useful because these two variables don't make sense to be on a scatterplot. It is saying that a given class of car is available in one or more kinds of drvs. This would be better desplayed in a table for example, rather an a scatterplot.
+```{r}
+ggplot(data=mpg) + geom_point(mapping = aes(x=class, y=drv))
+```
+
+
+3.3.1 Questions 1-5:
+
+1. This code is written incorrectly because the color argument is specific and cannot be inside the "aes" argument. Instead it should be written like this
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
+  
+2. Categorical variables: Manufacturer, Model, Trans, drv, fl, and class. Continuous variables: displ, year, cyl, cty, and hwy. You can tell from the main mpg run because it tells you what is stored in Int or Dbl.
+
+3. A continuous variable can not be mapped to shape. R will behave different depending on if you want to map a continuous or categorical variable. 
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = displ, size = cyl, shape = cty))
+
+4. When mapping the same variable to multiple aesthetics, it will still run and it will give you an even better understanding of the difference between each of the different vairable points. For example, this chunk of code will return bigger and lighter points for the higher the value of cty.
+
+ggplot(data = mpg) + 
++   geom_point(mapping = aes(x = displ, y = hwy, color = cty, size = cty))
+
+5. The stroke aesthetic can modify the width of a border.
+
+6. When you map something like aes(colour = displ < 5), it will plot two colors, one for when displ is less than 5 and one for when displ is greater than or equal to 5.
+
+
+Section 3.5.1: #4 and #5 only
+
+4. The advantage of using a faceted plot instead of a color plot is that we get to see each individual class's data points on it's own plot. This is useful because if we had them all on the same plot, it could get crowded and sometimes it's hard to differential the colors of each class. The disadvantage is that it's a overwhelming to look at so many different plots and it is hard to compare the points against each other. The less data points, it seems that it would be better to have a color plot on one graph. If there are more data points, it could get crowded and it would be better to put it in a faceted plot
+
+5. nrow and ncol are the number of rows and columns. Shrink, switch, scales, and labeller are all other arguments that control layout of panels. Facet_grid() does not have nrow and ncol arguments because it is a matrix of one row and one column which are best combined when those combinations exist. Also, you can have forumals for rows and columns.
+
+
+Section 3.6.1: #1-5.
+
+1. To draw a line chart, use geom_smooth(). To draw a boxplot use geom_boxplot(). To draw a histogram use geom_histogram(). To draw an area chart use ggplot_point() but add arguments to it.
+
+2. Prediction: A plot with x-axis being displ, y-axis being hwy, and all the points of mpg being the colored in the different options of drv. There would then be a line that goes through the graph that summarizes the trend of the data.
+
+Actual: Mostly correct, except there are 3 lines that cover each three of the drv options.
+
+3. Show.legend = False -> I believe this takes away the key on the side that explains what the color of each point means. Removing this line would make that legend appear again. The benefit of removing the legend is so that there's more space for the actual graph to be shown.
+
+4. SE in the geom_smooth() argument adds a layer of gray over the line that is created from smooth to give more information to the reader about how dense the points are.
+
+5. These two graphs will look the same because the argument inside ggplot() applies to all the geoms that come after it, unless it is overridden by another argument. By leaving ggplot() empty in the beginning but adding the same arguement to both geoms after, you are essentially adding the same 
+
+Section 3.7.1: #2 only
+
+2. geom_col() will add a bar chart instead of points, as we have normally done so. Col will show column like figures and can take the count of instances of that specific vairable. geom_bar() is a stat_count type function and will make the height of the bar porportional to the count of each data point. Use geom_col() when you wish to only display the data as is.
+
+
+
+
+
+
+
