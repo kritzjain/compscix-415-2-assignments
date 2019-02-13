@@ -11,7 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r load_packages, warning=FALSE, message=FALSE}
 library(mdsr)
-library(tidyverse) 
+library(tidyverse)
+library(ggplot2)
 ```
 
 
@@ -85,6 +86,44 @@ Section 3.7.1: #2 only
 
 
 
+Extra Credit
+
+Graph 1
+
+```{r}
+ggplot(data = mpg, mapping =aes(x = displ, y = hwy)) + geom_point() + geom_smooth(se = FALSE, show.legend = FALSE)
+```
+
+Graph 2
+
+```{r}
+ggplot(data = mpg, mapping=aes(x = displ, y = hwy)) + geom_point() + geom_smooth(data = mpg, mapping = aes(x=displ, y=hwy, group = drv), se = FALSE, show.legend = FALSE)
+```
+
+Graph 3
+
+```{r}
+ggplot(data = mpg, mapping=aes(x = displ, y = hwy, group = drv, color = drv), se = FALSE) + geom_point() + geom_smooth(se = FALSE)
+```
+
+Graph 4
+
+```{r}
+ggplot(data = mpg, mapping =aes(x = displ, y = hwy)) + geom_point(data=mpg, mapping = aes(x=displ, y=hwy, color=drv)) + geom_smooth(se = FALSE)
+```
+
+Graph 5
+
+```{r}
+ggplot(data = mpg, mapping =aes(x = displ, y = hwy, linetype=drv)) + geom_point(data=mpg, mapping = aes(x=displ, y=hwy, color=drv)) + geom_smooth(se = FALSE)
+```
+
+Graph 6
+
+```{r}
+ggplot(data = mpg) + geom_point(data = mpg, mapping = aes(x=displ, y=hwy, group=drv, color = "white" ,stroke = 5)) + geom_point(data = mpg, mapping = aes(x=displ, y=hwy, color = drv))
+### i don't know why White is being interpreted as purple in my runs
+```
 
 
 
