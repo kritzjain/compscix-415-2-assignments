@@ -16,7 +16,7 @@ library(ggplot2)
 ```
 
 
-3.2.4 Questions 1-5:
+###3.2.4 Questions 1-5:
 
 1. Running "ggplot(data=mpg)" returns a blank plot, without any x- or y- display names because we have not given the command line specific instructions on what to label them as.
 
@@ -35,7 +35,7 @@ ggplot(data=mpg) + geom_point(mapping = aes(x=class, y=drv))
 ```
 
 
-3.3.1 Questions 1-5:
+###3.3.1 Questions 1-5:
 
 1. This code is written incorrectly because the color argument is specific and cannot be inside the "aes" argument. Instead it should be written like this
 ggplot(data = mpg) + 
@@ -45,8 +45,11 @@ ggplot(data = mpg) +
 
 3. A continuous variable can not be mapped to shape. R will behave different depending on if you want to map a continuous or categorical variable. 
 
+
+```{r}
 ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy, color = displ, size = cyl, shape = cty))
+  geom_point(mapping = aes(x = displ, y = hwy, color = displ, size = displ,))
+```
 
 4. When mapping the same variable to multiple aesthetics, it will still run and it will give you an even better understanding of the difference between each of the different vairable points. For example, this chunk of code will return bigger and lighter points for the higher the value of cty.
 
@@ -58,14 +61,14 @@ ggplot(data = mpg) +
 6. When you map something like aes(colour = displ < 5), it will plot two colors, one for when displ is less than 5 and one for when displ is greater than or equal to 5.
 
 
-Section 3.5.1: #4 and #5 only
+###Section 3.5.1: #4 and #5 only
 
 4. The advantage of using a faceted plot instead of a color plot is that we get to see each individual class's data points on it's own plot. This is useful because if we had them all on the same plot, it could get crowded and sometimes it's hard to differential the colors of each class. The disadvantage is that it's a overwhelming to look at so many different plots and it is hard to compare the points against each other. The less data points, it seems that it would be better to have a color plot on one graph. If there are more data points, it could get crowded and it would be better to put it in a faceted plot
 
 5. nrow and ncol are the number of rows and columns. Shrink, switch, scales, and labeller are all other arguments that control layout of panels. Facet_grid() does not have nrow and ncol arguments because it is a matrix of one row and one column which are best combined when those combinations exist. Also, you can have forumals for rows and columns.
 
 
-Section 3.6.1: #1-5.
+###Section 3.6.1: #1-5.
 
 1. To draw a line chart, use geom_smooth(). To draw a boxplot use geom_boxplot(). To draw a histogram use geom_histogram(). To draw an area chart use ggplot_point() but add arguments to it.
 
@@ -79,14 +82,19 @@ Actual: Mostly correct, except there are 3 lines that cover each three of the dr
 
 5. These two graphs will look the same because the argument inside ggplot() applies to all the geoms that come after it, unless it is overridden by another argument. By leaving ggplot() empty in the beginning but adding the same arguement to both geoms after, you are essentially adding the same 
 
-Section 3.7.1: #2 only
+###Section 3.7.1: #2 only
 
 2. geom_col() will add a bar chart instead of points, as we have normally done so. Col will show column like figures and can take the count of instances of that specific vairable. geom_bar() is a stat_count type function and will make the height of the bar porportional to the count of each data point. Use geom_col() when you wish to only display the data as is.
 
 
 
+###Final Question
 
-Extra Credit
+The color scheme looks good and I have a lot of information that I can get out of this infographic. However there is too much clutter over all. The infographic is too busy. There are too many numbers, some of which don't add much value. Some of the numbers don't give me a good showing of what the infographic is trying to tell.
+
+
+
+###Extra Credit
 
 Graph 1
 
@@ -121,7 +129,7 @@ ggplot(data = mpg, mapping =aes(x = displ, y = hwy, linetype=drv)) + geom_point(
 Graph 6
 
 ```{r}
-ggplot(data = mpg) + geom_point(data = mpg, mapping = aes(x=displ, y=hwy, group=drv, color = "white" ,stroke = 5)) + geom_point(data = mpg, mapping = aes(x=displ, y=hwy, color = drv))
+ggplot(data = mpg) + geom_point(data = mpg, mapping = aes(x=displ, y=hwy, group=drv,stroke = 5), color = "white") + geom_point(data = mpg, mapping = aes(x=displ, y=hwy, color = drv))
 ### i don't know why White is being interpreted as purple in my runs
 ```
 
