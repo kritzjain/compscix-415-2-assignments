@@ -1,0 +1,138 @@
+---
+title: "COMPSCIX 415.2 Homework 3"
+author: "Kritika Jain"
+date: "2/18/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load_packages, warning=FALSE, message=FALSE}
+library(mdsr)
+library(tidyverse)
+library(ggplot2)
+library(nycflights13)
+```
+
+
+### Section 3.8.1: all exercises
+
+1. The problem with this plot is that the x and y coordinates are plotting similar types of data points, both about how many mpg the car gets in either hwy or cty. This kind of makes it look like each point get hwy/cty. It would be more useful to show this information in a different kind of chart.
+
+
+2. X controls how much jitter should be added by a numeric factor. You can also add a numeric amount which is factor divided by 5.
+
+
+3. It looks like geom_jitter() shows the points in a bigger cluster, where you can actually see all the points. geom_count() changes the size off the points if there is a higher volume of that specific point. 
+
+
+4. The default position for a boxplot is showing the dots as outliers, the whiskers as points that are 25% confidenc, and the boxes being where the data set is from 25%-7% confidence. 
+
+```{r}
+ggplot(data=mpg, mapping=aes(x=class, y=hwy)) + geom_boxplot()
+```
+
+
+###Section 3.9.1: #2 and #4 only
+
+2. labs() is used when you want to make good labels for your visual. You can add a title, subtitle, change the x- and y-axis names. You can also add a caption the data source. 
+
+
+4. This graph shows how many mpg you get in a city vs on a highway. The farther away from the (0,0), the more mpg you get in that car point. coord_fixed() displays a fixed aspect ratio of the graph. That means it's not skewed to fit the screen, it shows you a x:y ratio of 1. abline() adds a straight light through the plot depending on what you want to show. 
+
+
+###Section 4.4: #1 and #2 only
+
+
+1. This code will not work because there is no dot on the i, which means it's probably a different font or lowcase/uppercase which is causing this code to not work. R is text sensitive. 
+
+
+2. a. library(tidyverse) should be 
+
+
+b. ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+  
+could be 
+
+ggplot(data = mpg, mapping = aes(x=displ, y=hwy)) + 
+  geom_point()
+  
+  
+c. fliter(mpg, cyl = 8) should be filter(mpg, cyl == 8)
+
+d. filter(diamond, carat > 3) should be filter(diamonds, carat > 3)
+
+
+###Section 5.2.4: #1, #3 and #4 only
+
+1.1  Had an arrival delay of two or more hours
+```{r}
+filter(flights, arr_delay > 120)
+```
+
+1.2 Flew to Houston (IAH or HOU)
+```{r}
+filter(flights, dest == "IAH" | dest== "HOU")
+```
+
+1.3 Were operated by United, American, or Delta
+```{r}
+filter(flights, carrier == "UA" | carrier == "AA" | carrier == "DL")
+```
+
+1.4 Departed in summer (July, August, and September)
+```{r}
+filter(flights, month %in% c(7:9))
+```
+
+1.5 Arrived more than two hours late, but didn’t leave late (there is no data for this)
+```{r}
+filter(flights, arr_delay == 120, dep_delay == 0)
+```
+
+1.6 Were delayed by at least an hour, but made up over 30 minutes in flight (there is no data for this)
+```{r}
+filter(flights, dep_delay >= 60, arr_delay == -30)
+```
+
+1.7 Departed between midnight and 6am (inclusive)
+```{r}
+filter(flights, dep_time >= 000, dep_time <= 600)
+```
+
+
+3. 
+```{r}
+filter(flights, is.na(dep_time))
+```
+
+8255 rows do not have a dep_time. dep_delay, arr_time, arr_delay are a few variables that are also empty. Maybe this means that the flight never took off so none of the other columns can be populated.
+
+4. NA ^ 0 is not missing 
+
+NA | TRUE
+
+FALSE & NA
+
+What is the rule?
+
+NA * 0
+
+
+###Section 5.4.1: #1 and #3 only
+
+1. You can select these values from the table by doing a really big and function or you could do a NOT for all the other rows. 
+
+3. one_of() checks against the variables in chartacter vector. It will return the columns that match one if the arguments inside one_of(). Once you've concatnated a list of the different columns you want, as given in the problem, you can then use the one_of() function to show only columns inside that variable of characters.
+
+```{r}
+vars <- c("year", "month", "day", "dep_delay", "arr_delay")
+select(flights, one_of(vars))
+```
+
+
+
+####End of Homework 3
