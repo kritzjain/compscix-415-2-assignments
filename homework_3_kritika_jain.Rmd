@@ -49,7 +49,7 @@ ggplot(data=mpg, mapping=aes(x=class, y=hwy)) + geom_boxplot()
 1. This code will not work because there is no dot on the i, which means it's probably a different font or lowcase/uppercase which is causing this code to not work. R is text sensitive. 
 
 
-2. a. library(tidyverse) should be 
+2. a. library(tidyverse) is good as is, or you can say install.packages("tidyverse")
 
 
 b. ggplot(data = mpg) + 
@@ -111,15 +111,13 @@ filter(flights, is.na(dep_time))
 
 8255 rows do not have a dep_time. dep_delay, arr_time, arr_delay are a few variables that are also empty. Maybe this means that the flight never took off so none of the other columns can be populated.
 
-4. NA ^ 0 is not missing 
+4. NA ^ 0 - is 1 because anything to the power of 0 = 1 
 
-NA | TRUE
+NA | TRUE - will return TRUE because an OR statement will return whatever evaluates to TRUE.
 
-FALSE & NA
+FALSE & NA - will return FALSE because an AND statement will return TRUE only when both conditions are true. in this case, beacuse even one of the conditions is FALSE, it will evaluate to FALSE.
 
-What is the rule?
-
-NA * 0
+What is the rule? For an AND statement, it will return FALSE unless all arguments evaluate to TRUE. For an OR statement, it will return TRUE if even one argument is TRUE. 
 
 
 ###Section 5.4.1: #1 and #3 only

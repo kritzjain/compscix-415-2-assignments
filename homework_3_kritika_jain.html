@@ -218,7 +218,7 @@ library(nycflights13)</code></pre>
 <ol style="list-style-type: decimal">
 <li><p>This code will not work because there is no dot on the i, which means it’s probably a different font or lowcase/uppercase which is causing this code to not work. R is text sensitive.</p></li>
 <li><ol style="list-style-type: lower-alpha">
-<li>library(tidyverse) should be</li>
+<li>library(tidyverse) is good as is, or you can say install.packages(“tidyverse”)</li>
 </ol></li>
 </ol>
 <ol start="2" style="list-style-type: lower-alpha">
@@ -367,12 +367,11 @@ library(nycflights13)</code></pre>
 ## #   minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
 <p>8255 rows do not have a dep_time. dep_delay, arr_time, arr_delay are a few variables that are also empty. Maybe this means that the flight never took off so none of the other columns can be populated.</p>
 <ol start="4" style="list-style-type: decimal">
-<li>NA ^ 0 is not missing</li>
+<li>NA ^ 0 - is 1 because anything to the power of 0 = 1</li>
 </ol>
-<p>NA | TRUE</p>
-<p>FALSE &amp; NA</p>
-<p>What is the rule?</p>
-<p>NA * 0</p>
+<p>NA | TRUE - will return TRUE because an OR statement will return whatever evaluates to TRUE.</p>
+<p>FALSE &amp; NA - will return FALSE because an AND statement will return TRUE only when both conditions are true. in this case, beacuse even one of the conditions is FALSE, it will evaluate to FALSE.</p>
+<p>What is the rule? For an AND statement, it will return FALSE unless all arguments evaluate to TRUE. For an OR statement, it will return TRUE if even one argument is TRUE.</p>
 </div>
 <div id="section-5.4.1-1-and-3-only" class="section level3">
 <h3>Section 5.4.1: #1 and #3 only</h3>
