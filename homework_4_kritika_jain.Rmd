@@ -1,0 +1,106 @@
+---
+title: "COMPSCIX 415.2 Homework 4"
+author: "Kritika Jain"
+date: "2/24/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load_packages, warning=FALSE, message=FALSE}
+library(mdsr)
+library(tidyverse)
+library(ggplot2)
+library(nycflights13)
+```
+
+### Section 5.6.7: #2, #4 and #6 only (Extra Credit at bottom)
+
+2. 
+
+```{r}
+not_cancelled <- flights %>% filter(!is.na(dep_delay), !is.na(arr_delay))
+not_cancelled %>% group_by(year, month, day) %>% summarise(mean = mean(dep_delay))
+```
+
+
+4. The number of cancelled flights is 8255. The number of cancelled flights implies that there was no delay, instead the flight did not even take off. If there is a correlation, it could be that the longer the delay, the more likely it is to be cancelled.
+```{r}
+cancelled <- flights %>% filter(is.na(dep_delay), is.na(arr_delay))
+as_tibble(cancelled)
+```
+
+
+6. Sort, if TRUE, sorts outpit in descending order of n. You would use this when you want the output to be organized in an order
+
+
+###Section 10.5: #1, #2, #3 and #6 only
+
+1. We can tell that mtcars is not a tibble because it does not print everything out labelled with the type of data in the column, and it printed out more than 10 rows.
+
+2. This would cause you confusion because the data.frame does not label the type of data, vs the tibble lables that abc is a int and xyz is a chr.
+
+3. You would have to use the select function to get information from a tibble and store it in an object. You would then have to create a tibble using that variable.
+
+6. You can add extra column using the n_extra function
+
+
+###Section 12.3.3: #2, #3 and #4 only
+
+
+2. This code fails because the old column names are not in quotes. This code should look like this
+```{r}
+table4a %>% gather('1999', '2000', key = "year", value = "cases")
+```
+
+3. The problem with this code is that there is not a unique data set for Philip Woods. There are two different values for the same key for Philip Woods. What we could do is add an additional column that uniquely identifies each row, and then gather based on the unique identifier.
+
+4. To tidy this up, we need to use gather(). We can identify the two variables as Sex and Pregnant.
+```{r}
+preg <- tribble(
+  ~pregnant, ~male, ~female,
+  "yes",     NA,    10,
+  "no",      20,    12
+)
+preg_tidy <- preg %>% gather(male, female, key = "sex", value = "count")
+print(preg_tidy)
+```
+
+###Section 12.4.3: #1 and #2 only
+
+1. With extra, you are able to control what happens if there are too many pieces. You can emit warning messages, drop values, or merge pieces. Fill is the opposite, you use this when there aren't enough pieces. You can fill in info either from the right or left.
+
+2. With unite() and separate(), the remove function if TRUE will remove input columns from output data frame. as in it will not keep that column from the new table. If it is marked as FALSE, it will add a new column in the data frame.
+
+
+
+### Baby Names
+
+```{r}
+file_path <- "/users/kritika.jain/downloads/baby_names.txt"
+text_data <- read_delim(file = file_path, delim = "|") ##converts this from one big text to a data.frame
+glimpse(text_data)
+write_csv(text_data, path="/users/kritika.jain/downloads/baby_names.csv")
+file_path2 <- "/users/kritika.jain/downloads/baby_names.csv"
+csv_data <- read_csv(file = file_path2)
+glimpse(csv_data)
+```
+
+
+
+### Extra Credit - 5.6.7 #5
+
+Firstly, we have to group by carrier. Then we can filter this dataset for arr_delay Not null and filter out negative numbers, and then taking the average of those. Then you can arrange this in descending order. The airline that has the most delays is OO.
+
+
+```{r}
+flights %>% filter(arr_delay>0) %>% group_by(carrier) %>% summarise(avg_delay = mean(arr_delay, na.rm=TRUE)) %>% arrange(desc(avg_delay))
+```
+
+
+
+
+
+
