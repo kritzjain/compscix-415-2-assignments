@@ -1,0 +1,159 @@
+---
+title: "COMPSCIX 415.2 Homework 5/Midterm"
+author: "Kritika Jain"
+date: "3/3/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r load_packages, warning=FALSE, message=FALSE}
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(tibble)
+```
+
+
+## Midterm for Intro to Data Science
+
+####Table of Contents
+1. The Tidyverse Packages
+2. R Basics
+3. Data Import/Export
+4. Visualization
+5. Data Munging and Wrangling
+6. EDA
+7. Git and Github
+
+
+### 1.The Tidyverse Packages
+1 and 2. Each task is associated with the following packages that they are a part of, followed by two functions in that package.
+
+- Plotting - *ggplot2* - geom_point() and geom_smooth()
+- Data munging/wrangling - *dplyr* - select() and filter()
+- Reshaping (spreading and gathering) data - *nycflights13* - summarize() and mean()
+- importing/exporting data - *readr* - read_csv() and write_delim()
+
+### 2. R Basics
+
+1. Fix this code with the fewest number of changes so it still works:
+
+Old code: My_data.name___is.too00ooLong! <- c( 1 , 2   , 3 )
+
+New code: My_data.name___is.too00ooLong <- c( 1 , 2   , 3 ) *(just remove the '!')*
+
+2. Fix this code so it works. 
+
+Old code: my_string <- C('has', 'an', 'error', 'in', 'it)
+
+New code: my_string <- c('has', 'an', 'error', 'in', 'it') *(lowercase 'c' add an end quote after it)*
+
+3. We can see that even though some of the values are integers and some characters, they are still all returned as strings. This happens because when you concatenate different types of values, R will turn all the values into strings.
+
+### 3. Data Import/Export
+
+Below is the code to import the file "rail_trail.txt" and take a glimpse of it. Then export it under the name "rail_trail.csv" with it being comma-separated. Import it once again and take a glimpse.
+
+```{r}
+file_path <- "/users/kritika.jain/downloads/rail_trail.txt"
+text_data <- read_delim(file = file_path, delim = "|")
+glimpse(text_data)
+write_csv(text_data, path="/users/kritika.jain/downloads/rail_trail.csv")
+file_path2 <- "/users/kritika.jain/downloads/rail_trail.csv"
+csv_data <- read_csv(file = file_path2)
+glimpse(csv_data)
+```
+
+
+### 4. Visualization
+
+1. There are many things wrong with the first infographic. Firstly, it says that this is a percentage of respondents, but the numbers in the graphic don't add up to 100%. Secondly, the men and women respondents vs the age range respondents could have been represented in a different way. Lastly, the circles that are around the numbers are overwhelming to the eyes, instead if this was in a bar chart that would be more visually pleasing.
+
+2. 
+```{r}table 
+ggplot(data = diamonds, mapping = aes(x=cut, y=carat, color=color)) + geom_boxplot(aes(fill = color), position = "identity") + coord_flip() +labs(x = "CUT OF DIAMOND", y = "CARAT OF DIAMOND")
+```
+
+3. We can fix the coordinates on the "carat" axis to be a shorter range. This will help the analyist see the points on the boxplot a little better.
+
+```{r}
+ggplot(data = diamonds, mapping = aes(x=cut, y=carat, color=color)) + geom_boxplot(aes(fill = color), position = "identity") + coord_flip() +labs(x = "CUT OF DIAMOND", y = "CARAT OF DIAMOND") + ylim(0,3)
+```
+
+
+### 5. Data Munging and Wrangling
+
+1. 
+```{r}
+head(table2) 
+```
+
+
+This table is NOT tidy. It has the same value for multiple rows for the same column. Instead, we can make cases and population column headers.
+
+```{r}
+spread(table2, key = type, value = count)
+```
+
+2. If we want to add a new column, we use the mutate() function. We need to use division to get the price per carat. We would mutate the old table and assign it to itself, overriding the old variable. This is what the code should look like.
+
+diamonds <- mutate(diamonds, price_per_carat = price / carat)
+
+3. 
+```{r}
+diamonds %>% mutate(max = price > 10000, min = carat < 1.5) %>% group_by(cut) %>% summarise(count = n(), num = sum(max & min), prop = (num / count) * 100) 
+```
+
+This tibble makes sense because of correlation. As the price increases, the carat size also increases. It is a little odd that even fair diamonds are priced so high. It seems like some are even priced the same as higher quality diamonds. It would be interesting to see why they are prices so highly. 
+
+
+### 6. EDA
+
+1.From the summary below, we can see that the data set it from 2000 to 2015. 
+```{r}
+summary(txhousing)
+```
+
+
+2. If we take the count of city from txhousing, we see that there are 46 cities.
+```{r}
+count(txhousing, city)
+```
+
+
+3. July of 2015 in Houston had the most sales in this dataset.
+```{r}
+arrange(txhousing, desc(sales))
+```
+
+
+4. We can assume that there is a positive correlation between sales and listings. The more listings there are, the more houses there are to sell, meaning more sales. From the graph below we can see it's a diminishing line. It does have a positive correlation as the line that we get from geom_smooth() has a positive slope, until the very end where it levels out and starts dipping towards the end. 
+```{r}
+ggplot(data = txhousing, mapping = aes(x = sales, y = listings)) + geom_point() + geom_smooth()
+```
+
+
+5. We can see the proportion of missing sales to how many houses there are, in descencing order for each city.
+```{r}
+missing_sales <- txhousing %>% group_by(city) %>% summarise(missing =(sum(is.na(sales)) / n() * 100))
+arrange(missing_sales, desc(missing))
+```
+
+
+6. Cities with greater than 500 sales
+```{r}
+greater_than_500 <- filter(txhousing, sales > 500)
+ggplot(data = greater_than_500, mapping = aes(x=city, y=median)) + coord_flip() + geom_boxplot()
+```
+
+Part 1 - The medians are distributed differently.
+
+
+part 2 - Corpus Christi either has very little data points, or they're all within the same range. I would want to zoom into this specific city to see whats going on. 
+
+
+part 3 - From question 2, we can see that there are 46 cities in this dataset. If we plotted all 46 cities in a box plot, it would be an overwhelming visual to look at. We can regard cities with less than 500 sales as negligable, so we can focus on more meaningful data points of sales. 
+
+
