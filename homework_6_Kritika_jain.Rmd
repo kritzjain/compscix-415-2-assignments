@@ -1,0 +1,167 @@
+---
+title: "COMPSCIX 415.2 Homework 6"
+author: "Kritika Jain"
+date: "3/10/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r load_packages, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(nycflights13)
+library(mosaicData)
+data(Whickham)
+```
+
+
+
+## Exercise 1
+
+```{r}
+glimpse(Whickham)
+```
+
+
+
+####1. What variables are in this data set?
+
+There are 3 variables in this data set: outcome, smoker and age. This data set only holds information about women and it was conducted from 1972 to 1974.
+
+####2. How many observations are there and what does each represent?
+
+There are 1,314 observations and each one represents a single female, how old she is, if she's a smoker, and if she's living or dead.
+
+####3. Create a table (use the R code below as a guide) and a visualization of the relationship between smoking status and outcome, ignoring age. What do you see? Does it make sense?
+
+Below is the tibble with the count of smoking status and outcome.
+
+```{r}
+Whickham %>% count(outcome, smoker)
+```
+
+We can visualize this in a bar graph. From the visualization, we see that many people are alive whether they smoke or not. I don't think we can make an actual conclusion or correlation about smoker to outcome.
+
+```{r}
+Whickham %>% ggplot(aes(x=smoker, fill=outcome)) + geom_bar()
+```
+
+
+
+#### 4. Recode the age variable into an ordered factor with three categories: age <= 44, age > 44 & age <= 64, and age > 64. Now, recreate visualization from above, but facet on your new age factor. What do you see? Does it make sense?
+
+First we will categorize age into three buckets. But age_cat is still considered a "character". We need to turn it into a categorical variable, so we should make it into an ordered factor. Finally, we should arrange the order to what we want, which would ideally be in <=44, > 44 % <= 64, and then >64. When we replot, we can see that age might actually make a difference in the relationship between Smoker and Outcome. Mostly young people are alive if they smoke or not, but as age increases, the ratio between alive and dead increases. But it's still not an obvious correlation. And we can't conclude that because of smoking the person is dead or alive.
+
+
+```{r}
+age <- Whickham %>% select(age)
+age_cat <- case_when(age <= 44 ~ "<=44", 
+                     age>44 & age<= 64 ~ "> 44 & <= 64", 
+                     age> 64 ~ ">64")
+
+age_factor <- factor(age_cat, ordered =TRUE)
+age_factor <- fct_relevel(age_factor, "<=44", "> 44 & <= 64", ">64")
+
+Whickham %>% ggplot(aes(x=smoker, fill=outcome)) + geom_bar() + facet_wrap(~ factor(age_factor))
+```
+
+
+
+## Exercise 2
+
+#### 1. Generate a random sample of size n = 10000 from a gamma(1,2) distribution and plot a histogram or density curve. Use the code below to help you get your sample.
+
+
+```{r}
+n = 10000
+gamma_samp <- tibble(x = rgamma(n, shape = 1, scale = 2))
+ggplot() + geom_histogram(aes(x = gamma_samp$x))
+```
+
+#### 2. What is the mean and standard deviation of your sample? 
+
+```{r}
+mean_samp <- gamma_samp %>% .[['x']] %>% mean()
+sd_samp <- gamma_samp %>% .[['x']] %>% sd()
+mean_samp
+sd_samp
+```
+
+
+mean = 1.985457
+
+sd = 1.959549
+
+
+#### 3. Pretend the distribution of our population of data looks like the plot above. Now take a sample of size n = 30 from a Gamma(1,2) distribution, plot the histogram or density curve, and calculate the mean and standard deviation.
+
+mean_samp_m = 2.018382
+
+sd_samp_m = 1.598642
+
+```{r}
+m = 30
+gamma_samp_m <- tibble(x = rgamma(m, shape = 1, scale = 2))
+ggplot() + geom_histogram(aes(x = gamma_samp_m$x))
+
+mean_samp_m <- gamma_samp_m %>% .[['x']] %>% mean()
+sd_samp_m <- gamma_samp_m %>% .[['x']] %>% sd()
+mean_samp_m
+sd_samp_m
+```
+
+
+#### 4. Take a sample of size n = 30, again from the Gamma(1,2) distribution, calculate the mean, and assign it to a vector named mean_samp. Repeat this 10000 times!!!! The code below might help.
+
+```{r}
+mean_samp <- rep(NA, 10000)
+for(i in 1:10000) {
+  g_samp <- rgamma(30, shape = 1, scale = 2)
+  mean_samp[i] <- mean(g_samp)
+}
+mean_samp <- tibble(mean_samp)
+mean_samp
+```
+
+
+#### 5. Make a histogram of your collection of means from above (mean_samp).
+
+```{r}
+ggplot() + geom_histogram(aes(x = mean_samp$mean_samp))
+```
+
+
+#### 6. Calculate the mean and standard deviation of all of your sample means.
+Mean = 2.003822
+SD = 0.3666139
+
+```{r}
+mean(mean_samp$mean_samp)
+sd(mean_samp$mean_samp)
+```
+
+
+#### 7. Did anything surprise you about your answers to #6?
+
+The Mean of mean_samp is close to 2, which I believe is expected. The SD is pretty low, closer to 0.367. I was expecting BOTH them to be closer to 2, but since this is the sd of the means, maybe this makes sense.
+
+#### 8. Repeat #4-#6, but now with a sample of size n = 300 instead. Do your results match up well with the theorem?
+
+I was expecting mean to be around 2, which it is. However, this time around SD is closer to 0.1151885, which makes sense because if we look at the SD formula and plug in these values, it is 0.1154701, which is pretty close!
+
+```{r}
+mean_samp <- rep(NA, 10000)
+for(i in 1:10000) {
+  g_samp <- rgamma(300, shape = 1, scale = 2)
+  mean_samp[i] <- mean(g_samp)
+}
+mean_samp <- tibble(mean_samp)
+mean_samp
+ggplot() + geom_histogram(aes(x = mean_samp$mean_samp))
+mean(mean_samp$mean_samp)
+sd(mean_samp$mean_samp)
+2/sqrt(300)
+```
+
