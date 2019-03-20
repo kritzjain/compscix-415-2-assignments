@@ -1,0 +1,131 @@
+---
+title: "COMPSCIX 415.2 Homework 7"
+author: "Kritika Jain"
+date: "3/18/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load_packages, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(broom)
+```
+
+
+
+### Exercise 1
+There are 1,460 observations and 81 variables.
+
+
+```{r}
+file_path <- "/users/kritika.jain/downloads/train.csv"
+csv_data <- read_delim(file = file_path, delim = ",")
+glimpse(csv_data)
+```
+
+### Exercise 2
+
+#### Visualize the distribution of SalePrice.
+
+```{r}
+ggplot(data = csv_data, mapping = aes(x = SalePrice)) + geom_histogram()
+```
+
+
+#### Visualize the covariation between SalePrice and Neighborhood.
+
+```{r}
+ggplot(data = csv_data) + geom_count(mapping = aes(x = SalePrice, y = Neighborhood))
+```
+
+
+#### Visualize the covariation between SalePrice and OverallQual.
+
+```{r}
+ggplot(data = csv_data) + geom_count(mapping = aes(x = SalePrice, y = OverallQual))
+```
+
+
+### Exercise 3
+
+The coefficient is 180921. The mean is 180921.2. The R squared is 0.
+
+
+```{r}
+(avg_sale_lm <- lm(formula = SalePrice ~ 1, data = csv_data))
+glance(avg_sale_lm)
+mean(csv_data$SalePrice)
+```
+
+
+### Exercise 4
+
+#### What kind of relationship will these features have with our target?
+The seem like they would have a positive relationship because from their descriptions, we can guess that the bigger the unit of GrLivArea, OverallQual, and Neighborhood (individually), the higher the SalePrice would go.
+
+
+#### Can the relationship be estimated linearly?
+Yes they can be.
+
+
+#### Are these good features, given the problem we are trying to solve?
+We are trying to find the Sale Price of a listing. These do seem like good features to look at to determine SalePrice.
+
+
+
+```{r}
+(sale_lm <- lm(formula = SalePrice ~ GrLivArea + OverallQual + Neighborhood, data = csv_data))
+glance(sale_lm)
+
+```
+
+
+
+#### How would you interpret the coefficients on GrLivArea and OverallQual?
+We can tell that these two features are continous and not categorical. They are infact positively related to SalePrice. If we raised GrLivArea by one unit, and hold everything else constant, then SalePrice would increase by 55.56. Similarly, if we held every other feature constant but increased OverallQual by one unit, then SalePrice would increase by 20951.42.
+
+
+#### How would you interpret the coefficient on NeighborhoodBrkSide?
+Holding everything else constant, if we increased NeighborhoodBrkSide by one unit, then SalePrice would be -13025.45 lower than the very first variable in  neighborhood (not shown).
+
+
+#### Are the features significant?
+We can accept these features because they all have positive coefficients. However, the R squared is pretty low, 0.783.
+
+
+#### Are the features practically significant?
+The p-value is zero, so we can determind that they are practically significant.
+
+
+#### Is the model a good fit?
+No, it could be better. The adjusted R squared is pretty low.
+
+### Exercise 5
+
+
+```{r}
+(sale_lot_lm <- lm(formula = SalePrice ~ LotConfig, data = csv_data))
+glance(sale_lot_lm)
+```
+
+
+
+### Exercise 6
+
+We can see that the coefficients and R squared dont stay within one range. Coefficients range from somewhere in the 4.xx to 6.xx and R squared ranges from 0.7-0.9.
+
+ 
+```{r}
+sim1a <- tibble(
+  x = rep(1:10, each = 3),
+  y = x * 1.5 + 6 + rt(length(x), df = 2)
+)
+(sim1a_lm <- lm(formula = y ~ x, data = sim1a))
+glance(sim1a_lm)
+```
+
+
