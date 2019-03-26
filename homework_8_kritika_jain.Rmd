@@ -1,0 +1,44 @@
+---
+title: "COMPSCIX 415.2 Homework 8"
+author: "Kritika Jain"
+date: "3/23/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load_packages, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(leaflet)
+library(jsonlite)
+library(shiny)
+```
+
+
+```{r}
+city <- c('Luxembourg', 'Dublin', 'Brisbane', 'Seville', 'Stockholm', 'Ljubljana')
+
+
+map_it <- function(city){
+  url <- paste0("https://api.jcdecaux.com/vls/v1/stations?contract=",city,"&apiKey=f57c56ee5683249b1d4f1fb38009d48c83827c81")
+  df_api <- fromJSON(url, flatten = TRUE) 
+  return(df_api)
+  lat_position = df_api$position$lat
+  lng_position = df_api$position$lng
+  df_api <- df_api %>% mutate(available_bikes)
+  map <- leaflet(df_api) %>% setView(mean(lng_position), mean(lat_position), zoom = 10) %>% addTiles() %>% addMarkers(label = ~htmlEscape(available_bikes))
+
+  return(map)
+  
+  
+}
+  
+
+map_it('Dublin')
+```
+
+
+
