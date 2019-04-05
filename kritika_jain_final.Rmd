@@ -1,0 +1,196 @@
+---
+title: "COMPSCIX 415.2 Homework 9/Final"
+author: "Kritika Jain"
+date: "4/4/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r load_packages, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(broom)
+```
+
+## Exercise 1 - Sampling Distributions, Functions and For Loops (10 points)
+
+Recall that the distribution of the sample mean is approximately a Normal distribution, and that the standard error is σ/√n. This holds true regardless of the distribution of our population.
+
+For this problem, assume that the number of miles that a particular car can run before its battery wears out is exponentially distributed with an average of 10,000 miles.
+
+The exponential distribution has a rate parameter that controls how quickly the distribution decays and defines what the mean and standard deviation will be. In our case the rate = 1/10000, the mean = 10000 and the  standard deviation = 10000
+
+### Step 1
+
+Write an R function that does the following:
+
+- Takes a sample of size samp_size from this exponential distribution (samp_size is an input parameter for the function)
+- Calculates the mean of that sample
+- Calculates the standard deviation of that sample
+- Returns the calculated mean and standard deviation as a list
+
+```{r}
+samp_fun <- function(samp_size, samp_rate) {
+  samp <- rexp(n = samp_size, rate = samp_rate)
+  samp_avg = mean(samp)
+  samp_std_dev = sd(samp)
+  stats <- list(samp_avg = samp_avg, samp_std_dev = samp_std_dev)
+  return(stats)
+}
+```
+
+
+### Step 2
+
+Then write a loop that does this:
+
+- Runs the above function 1000 times, with samp_size = 50 and samp_rate = 1/10000
+- Saves all of the sample means in a vector called sample_means, and all of the sample standard deviations in a vector called sample_sds
+
+
+```{r}
+sample_means <- c()
+sample_sds <- c()
+for(i in 1:1000){
+  stats <- samp_fun(50, 1/10000)
+  sample_means[i] <- stats$samp_avg
+  sample_sds[i] <- stats$samp_std_dev
+}
+```
+
+
+### Step 3
+
+Then
+
+- plot your sample means as a histogram
+
+```{r}
+sample_means_tibble <- tibble(sample_means)
+sample_means_tibble %>% ggplot() + geom_histogram(aes(x = sample_means))
+```
+
+
+- output the standard deviation of your sample means
+
+```{r}
+sd(sample_means)
+```
+
+- calculate the theoretical standard error (σ=10000, n = sample size)
+
+```{r}
+st_er = 10000/sqrt(50)
+st_er
+```
+
+
+- calculate the mean of the sample standard deviations and use this to calculate the empirical standard error
+
+```{r}
+mean_samp_sds <- mean(sample_sds)
+mean_samp_sds/sqrt(50)
+```
+
+
+### Step 4
+
+Repeat STEP 2 and STEP 3 using a sample size of 5000.
+
+```{r}
+
+#step 2
+for(i in 1:1000){
+  stats <- samp_fun(5000, 1/10000)
+  sample_means[i] <- stats$samp_avg
+  sample_sds[i] <- stats$samp_std_dev
+}
+
+# plot your sample means as a histogram
+sample_means_tibble <- tibble(sample_means)
+sample_means_tibble %>% ggplot() + geom_histogram(aes(x = sample_means))
+
+
+# output the standard deviation of your sample means
+sd(sample_means)
+
+#calculate the theoretical standard error (σ=10000, n = sample size)
+st_er = 10000/sqrt(5000)
+st_er
+
+#calculate the mean of the sample standard deviations and use this to calculate the empirical standard error
+mean_samp_sds <- mean(sample_sds)
+mean_samp_sds/sqrt(5000)
+```
+
+
+## Exercise 2 - Linear Regression (5 points)
+
+Load the train.csv dataset into R and fit a regression model with:
+
+- y = SalePrice
+- Features: LotArea, OverallQual, and ExterQual
+
+
+```{r}
+file_path <- "/users/kritika.jain/downloads/train.csv"
+train <- read_delim(file = file_path, delim = ",")
+train_lm <- lm(SalePrice ~ LotArea + OverallQual + ExterQual, data = train)
+train_lm
+```
+
+
+- Use the broom package to output the coefficients and the R-squared
+
+```{r}
+glance(train_lm)
+```
+
+
+- Interpret the coefficient on LotArea
+
+For every unit LotArea goes up by, SalePrice will go up by 1.453 units. If LotArea is 0, then SalePrice is 40763.573.
+
+- Interpret the coefficient on ExterQualGd
+
+For every unit ExterQualGd goes up by, SalePrice will go down by 71529.493 units. If ExterQualGd is 0, then SalePrice is 40763.573.
+
+- Compare this model to the model we fit in HW 7 with GrLivArea, OverallQual, Neighborhood. Which is the better fitting model?
+
+I believe the model in homework 7 was better because the Rsqured and Adj Rsquared were higher.
+
+
+## Exercise 3 - AB Testing (5 points)
+
+
+
+```{r}
+file_path <- "/users/kritika.jain/downloads/ab_test_data.csv"
+abtest <- read_delim(file = file_path, delim = ",")
+
+abtest %>% group_by(version, conversion) %>% summarize(n= n()) %>% mutate(proportion = n/4000)
+
+#AB test
+n_a <- 2000
+n_b <- 2000
+true_a <- 83/n_a
+true_b <- 200/n_b
+
+samp_a <- rbinom(n=1, size = n_a, prob = true_a)
+samp_b <- rbinom(n=1, size = n_b, prob = true_b)
+
+prop_test <- prop.test(c(samp_a, samp_b), c(n_a, n_b))
+prop_test$p.value
+```
+
+A. What proportion of visitors converted for each version of the webpage?
+
+2.08% convered for test A and 5% converted for test B.
+
+B. Perform the AB test in R. What is the p-value for the AB test (hypothesis test of proportions)?
+
+The P-value is 3.707765e-17. This is less than 0.05 so we can conclude this is significant.
+
